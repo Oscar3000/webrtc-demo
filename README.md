@@ -1,0 +1,1 @@
+An example project of webRTC real-time communication with a signaling server.
