@@ -1,9 +1,9 @@
 import socket from "./socket";
 import MediaDevice from "./mediaDevice";
-
+import Emitter from "./Emitter";
 const PC_CONFIG = { iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }] };
 
-export default class PeerConnection {
+export default class PeerConnection extends Emitter {
   constructor(friendId) {
     super();
     if (hasRTCPeerConnection()) {
@@ -14,7 +14,8 @@ export default class PeerConnection {
           candidate: event.candidate,
         });
       };
-       
+      this.conn.ontrack = event => this.emit('peerStream', event.streams[0]);
+
       this.friendId = friendId;
       this.mediaDevice = new MediaDevice();
     } else {
@@ -22,8 +23,41 @@ export default class PeerConnection {
     }
   }
 
-  startPeerConnection(user) {
-    this.mediaDevice;
+  /**
+   * Starting the call
+   * @param {Boolean} isCaller
+   * @param {Object} config - configuration for the call {audio: boolean, video: boolean}
+   */
+  startPeerConnection(isCaller, config) {
+    this.mediaDevice
+      .on("stream", (stream) => {
+        stream.getTracks().forEach((track) => {
+          this.conn.addTrack(track, stream);
+        });
+        this.emit("localStream", stream);
+        if (isCaller)
+          socket.emit("call", {
+            to: this.friendId,
+          });
+        else this.createOffer();
+      })
+      .start(config);
+    return this;
+  }
+
+  /**
+   * stop the call
+   * @param {Boolean} isStarter
+   */
+  stopPeerConnection(isStarter) {
+    if (isStarter) {
+      socket.emit("end", { to: this.friendId });
+    }
+    this.mediaDevice.stop();
+    this.conn.close();
+    this.conn = null;
+    this.off();
+    return this;
   }
 
   createOffer() {
@@ -31,13 +65,15 @@ export default class PeerConnection {
       .createOffer()
       .then(this.getDescription.bind(this))
       .catch((err) => console.log(err));
-      return this;
+    return this;
   }
 
   createAnswer() {
-      this.conn.createAnswer()
-          .then(this.getDescription.bind(this))
-          .catch(err => console.log(err));
+    this.conn
+      .createAnswer()
+      .then(this.getDescription.bind(this))
+      .catch((err) => console.log(err));
+    return this;
   }
 
   getDescription(desc) {
