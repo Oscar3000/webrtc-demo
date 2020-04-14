@@ -9,7 +9,6 @@ function CallWindow({ clientId, startCall }) {
     if (callerId.trim().length > 0) {
       return startCall(true, config, callerId);
     }
-    console.log("Button was clicked");
   };
 
   return (

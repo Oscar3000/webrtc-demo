@@ -27,6 +27,7 @@ export default class MediaDevice extends Emitter {
         })
         .catch((err) => {
           if (err instanceof DOMException) {
+            console.log(err);
             alert("Cannot open webcam and microphone");
           } else {
             console.log(err);

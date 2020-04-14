@@ -3,7 +3,7 @@ import _ from "lodash";
 import socket from "./utils/socket";
 import "./sass.scss";
 import PeerConnection from "./utils/peerConnection";
-import MainWindow from "./components/MainWindow";
+import Header from "./components/Header";
 import VideoBox from "./components/VideoBox";
 import CallModal from "./components/CallModal";
 
@@ -15,7 +15,7 @@ class Window extends React.Component {
       callFrom: "",
       localSrc: null,
       peerSrc: null,
-      callModal: true,
+      callModal: false,
       callWindow: false
     };
     this.pc = null;
@@ -61,7 +61,7 @@ class Window extends React.Component {
 
   rejectCall() {
     const { callFrom } = this.state;
-    //socket.emit("end", { to: callFrom });
+    socket.emit("end", { to: callFrom });
     this.setState({ callModal: false });
   }
 
@@ -78,15 +78,16 @@ class Window extends React.Component {
     });
   }
   render() {
-    const { clientId, callFrom, localSrc, peerSrc, callModal } = this.state;
+    const { clientId, callFrom, localSrc, peerSrc, callModal, callWindow } = this.state;
     return (
       <div className="container">
-        <MainWindow clientId={clientId} startCall={this.startCallHandler} />
+        <Header clientId={clientId} startCall={this.startCallHandler} />
         {!_.isEmpty(this.config) && (
           <VideoBox
             localSrc={localSrc}
             peerSrc={peerSrc}
             config={this.config}
+            active={callWindow}
             mediaDevice={this.pc.mediaDevice}
             endCall={this.endCallHandler}
           />
