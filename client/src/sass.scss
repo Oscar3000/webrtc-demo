@@ -1,0 +1,187 @@
+// Variables
+$main-color: #FFFFFF;
+$secondary-color: darken(#888888, 10%);
+$main-font-size: 14px;
+
+$green: #7FBA00;
+$yellow: #FCD116;
+$red: #E81123;
+$blue: #00AFF0;
+
+@mixin constructor($property, $specs...) {
+	-webkit-#{$property}: $specs;
+	-moz-#{$property}: $specs;
+	-o-#{$property}: $specs;
+	#{$property}: $specs;
+}
+
+@mixin border-radius($specs) {
+	@include constructor(border-radius, #{$specs})
+}
+
+@mixin bg-gradient($specs...) {
+	background: -webkit-linear-gradient($specs);
+	background: -moz-linear-gradient($specs);
+	background: -o-linear-gradient($specs);
+	background: linear-gradient($specs);
+}
+
+@mixin animation($animate...) {
+    $max: length($animate);
+    $animations: '';
+
+    @for $i from 1 through $max {
+        $animations: #{$animations + nth($animate, $i)};
+
+        @if $i < $max {
+            $animations: #{$animations + ", "};
+        }
+    }
+    -webkit-animation: $animations;
+    -moz-animation:    $animations;
+    -o-animation:      $animations;
+    animation:         $animations;
+}
+
+@mixin keyframes($animationName) {
+    @-webkit-keyframes #{$animationName} {
+        @content;
+    }
+    @-moz-keyframes #{$animationName} {
+        @content;
+    }
+    @-o-keyframes #{$animationName} {
+        @content;
+    }
+    @keyframes #{$animationName} {
+        @content;
+    }
+}
+
+@mixin transform($specs) {
+	@include constructor(transform, $specs)
+}
+
+html {
+    background: url("https://source.unsplash.com/2560x1440/?cars,building") center no-repeat fixed;
+  }
+  
+body {
+    background: rgba(#000000, 0.6);
+    padding: 0px 20px 20px 20px;
+    min-height: 100vh;
+    color: white;
+  }
+
+.container {
+    position: relative;
+    display: block;
+    padding: 10px;
+}
+
+.flex-container {
+    display: inline-flex;
+    align-items: center;
+}
+
+input {
+    width: 250px;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.videoContainer {
+    display: block;
+    margin: 10;
+    width: 600px;
+    height: 600px;
+}
+
+#remoteVideo {
+    width: 100%;
+    height: 100%;
+}
+
+#localVideo {
+    position: absolute;
+    width: 20%;
+    height: 20%;
+    top: 15px;
+    left: 15px;
+}
+
+.btn-action {
+	$height: 50px;
+	height: $height;
+	width: $height;
+	line-height: $height;
+	margin: 0px 8px;
+	font-size: 1.4em;
+	text-align: center;
+	border-radius: 50%;
+	background-color: black;
+	border-color: black;
+	color: white;
+	cursor: pointer;
+	transition-duration: 0.25s;
+}
+
+.call-modal {
+	position: absolute;
+	width: 400px;
+	padding: 20px;
+	left: calc(50vw - 200px);
+	top: calc(50vh - 60px);
+	@include bg-gradient(top, #074055 0%, #030D10 100%);
+	@include border-radius(5px);
+	text-align: center;
+	display: none;
+
+	&.active {
+		display: block;
+		z-index: 9999;
+		@include animation(blinking 3s infinite linear);
+	}
+
+	.btn-action:not(.hangup) {
+		background-color: $green;
+	}
+
+	span.caller {
+		color: $blue;
+	}
+
+	p {
+		font-size: 1.5em;
+    }
+}
+
+.video-control, .call-modal {
+	.btn-action {
+
+		&:hover {
+			opacity: 0.8;	
+		}
+		
+		&.hangup {
+			background-color: $red;
+			border-color: $red;
+		}
+		
+		&:not(.hangup) {
+			background-color: $blue;
+			border-color: $blue;
+			&.disable {
+				background-color: $red;
+			}
+		}
+	}
+}
+
+@include keyframes(blinking) {
+	25% {@include transform(scale(0.96))}
+	50% {@include transform(scale(1))}
+	75% {@include transform(scale(0.96))}
+	100% {@include transform(scale(1))}
+}

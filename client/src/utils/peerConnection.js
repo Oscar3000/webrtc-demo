@@ -36,7 +36,7 @@ export default class PeerConnection extends Emitter {
         });
         this.emit("localStream", stream);
         if (isCaller)
-          socket.emit("call", {
+          socket.emit("request", {
             to: this.friendId,
           });
         else this.createOffer();
