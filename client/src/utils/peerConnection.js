@@ -83,7 +83,7 @@ export default class PeerConnection extends Emitter {
   }
 
   setRemoteDescription(sdp) {
-    const rtcSdp = new RTCSessionDescription(desc);
+    const rtcSdp = new RTCSessionDescription(sdp);
     this.conn.setRemoteDescription(rtcSdp);
     return this;
   }

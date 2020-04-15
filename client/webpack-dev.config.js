@@ -40,7 +40,7 @@ const configs = addBaseConfig({
     compress: true,
     port: 9000,
     proxy: {
-      '/bridge/': `http://localhost:${socketConfig.PORT || 5000}`
+      '/peer/': `http://localhost:${socketConfig.PORT || 5000}`
     },
     watchOptions: {
       aggregateTimeout: 300,

@@ -18,7 +18,7 @@ class Window extends React.Component {
       callModal: false,
       callWindow: false
     };
-    this.pc = null;
+    this.pc = {};
     this.config = null;
     this.startCallHandler = this.startCall.bind(this);
     this.endCallHandler = this.endCall.bind(this);
@@ -61,6 +61,7 @@ class Window extends React.Component {
 
   rejectCall() {
     const { callFrom } = this.state;
+    console.log("rejecting call from", callFrom)
     socket.emit("end", { to: callFrom });
     this.setState({ callModal: false });
   }
@@ -74,7 +75,8 @@ class Window extends React.Component {
     this.setState({
       localSrc: null,
       peerSrc: null,
-      callWindow: false
+      callWindow: false,
+      callModal: false
     });
   }
   render() {
