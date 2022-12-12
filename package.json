@@ -19,7 +19,7 @@
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "3",
     "css-loader": "^3.5.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "html-webpack-plugin": "^4.2.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
